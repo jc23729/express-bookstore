@@ -1,9 +1,11 @@
 const express = require("express");
-const Book = require("../models/book");
-const { validate } = require("jsonschema");
-// const jsonschema = require("jsonschema");
-const booksSchema = require("../schemas/bookSchemaNew.json");
 const router = new express.Router();
+
+const { validate } = require("jsonschema");
+const bookSchemaNew = require("../schemas/bookSchemaNew");
+// const bookSchemaUpdate = require("../schemas/bookSchemaUpdate");
+
+const Book = require("../models/book");
 
 /** GET / => {books: [book, ...]}  */
 
@@ -28,7 +30,7 @@ router.get("/:id", async function (req, res, next) {
 });
 
 /** POST /   bookData => {book: newBook}  */
-
+//origonal code
 // router.post("/", async function (req, res, next) {
 //   try {
 //     const book = await Book.create(req.body);
@@ -41,13 +43,13 @@ router.get("/:id", async function (req, res, next) {
 //POST ROUTE WITH SCHEMA
 /** POST /   bookData => {book: newBook}  */
 
-router.post("/", async function (req, res, next) {
-  const validation = jsonschema.validate(req.body, bookSchemaNew);
-  if (!result.valid) {
-    return res.json("INVALID DATA!")
-  }
-  return res.json("THAT IS VALID");
-});
+// router.post("/", async function (req, res, next) {
+//   const validation = jsonschema.validate(req.body, bookSchemaNew);
+//   if (!result.valid) {
+//     return res.json("INVALID DATA!")
+//   }
+//   return res.json("THAT IS VALID");
+// });
 
 //solution code
 router.post("/", async function (req, res, next) {
