@@ -43,30 +43,30 @@ router.get("/:id", async function (req, res, next) {
 //POST ROUTE WITH SCHEMA
 /** POST /   bookData => {book: newBook}  */
 
-router.post("/", async function (req, res, next) {
-  const validation = jsonschema.validate(req.body, bookSchemaNew);
-  if (!result.valid) {
-    return res.json("INVALID DATA!")
-  }
-  return res.json("THAT IS VALID");
-});
+// router.post("/", async function (req, res, next) {
+//   const validation = validate(req.body, bookSchemaNew);
+//   if (!validation.valid) {
+//     return res.json("INVALID DATA!")
+//   }
+//   return res.json("THAT IS VALID");
+// });
 
 //solution code
-// router.post("/", async function (req, res, next) {
-//   try {
-//     const validation = validate(req.body, bookSchemaNew);
-//     if (!validation.valid) {
-//       return next({
-//         status: 400,
-//         error: validation.errors.map((e) => e.stack),
-//       });
-//     }
-//     const book = await Book.create(req.body);
-//     return res.status(201).json({ book });
-//   } catch (err) {
-//     return next(err);
-//   }
-// });
+router.post("/", async function (req, res, next) {
+  try {
+    const validation = validate(req.body, bookSchemaNew);
+    if (!validation.valid) {
+      return next({
+        status: 400,
+        error: validation.errors.map((e) => e.stack),
+      });
+    }
+    const book = await Book.create(req.body);
+    return res.status(201).json({ book });
+  } catch (err) {
+    return next(err);
+  }
+});
 
 /** PUT /[isbn]   bookData => {book: updatedBook}  */
 
