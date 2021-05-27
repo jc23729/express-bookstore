@@ -1,6 +1,7 @@
 const express = require("express");
 const Book = require("../models/book");
-const jsonschema = require("jsonschema");
+const { validate } = require("jsonschema");
+// const jsonschema = require("jsonschema");
 const booksSchema = require("../schemas/bookSchemaNew.json");
 const router = new express.Router();
 
@@ -40,13 +41,13 @@ router.get("/:id", async function (req, res, next) {
 //POST ROUTE WITH SCHEMA
 /** POST /   bookData => {book: newBook}  */
 
-// router.post("/", async function (req, res, next) {
-//   const validation = jsonschema.validate(req.body, bookSchemaNew);
-//   if (!result.valid) {
-//     return res.json("INVALID DATA!")
-//   }
-//   return res.json("THAT IS VALID");
-// });
+router.post("/", async function (req, res, next) {
+  const validation = jsonschema.validate(req.body, bookSchemaNew);
+  if (!result.valid) {
+    return res.json("INVALID DATA!")
+  }
+  return res.json("THAT IS VALID");
+});
 
 //solution code
 router.post("/", async function (req, res, next) {
