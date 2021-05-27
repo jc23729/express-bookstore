@@ -1,8 +1,13 @@
+/** Routes for books in bookstore. */
+
 const express = require("express");
-const Book = require("../models/book");
-const jsonschema = require("jsonschema");
-const booksSchema = require("../schemas/bookSchemaNew.json");
 const router = new express.Router();
+
+const { validate } = require("jsonschema");
+const bookSchemaNew = require("../schemas/bookSchemaNew");
+const bookSchemaUpdate = require("../schemas/bookSchemaUpdate");
+
+const Book = require("../models/book");
 
 /** GET / => {books: [book, ...]}  */
 
@@ -17,9 +22,9 @@ router.get("/", async function (req, res, next) {
 
 /** GET /[id]  => {book: book} */
 
-router.get("/:id", async function (req, res, next) {
+router.get("/:isbn", async function (req, res, next) {
   try {
-    const book = await Book.findOne(req.params.id);
+    const book = await Book.findOne(req.params.isbn);
     return res.json({ book });
   } catch (err) {
     return next(err);
@@ -28,27 +33,6 @@ router.get("/:id", async function (req, res, next) {
 
 /** POST /   bookData => {book: newBook}  */
 
-// router.post("/", async function (req, res, next) {
-//   try {
-//     const book = await Book.create(req.body);
-//     return res.status(201).json({ book });
-//   } catch (err) {
-//     return next(err);
-//   }
-// });
-
-//POST ROUTE WITH SCHEMA
-/** POST /   bookData => {book: newBook}  */
-
-// router.post("/", async function (req, res, next) {
-//   const validation = jsonschema.validate(req.body, bookSchemaNew);
-//   if (!result.valid) {
-//     return res.json("INVALID DATA!")
-//   }
-//   return res.json("THAT IS VALID");
-// });
-
-//solution code
 router.post("/", async function (req, res, next) {
   try {
     const validation = validate(req.body, bookSchemaNew);
@@ -69,6 +53,19 @@ router.post("/", async function (req, res, next) {
 
 router.put("/:isbn", async function (req, res, next) {
   try {
+    if ("isbn" in req.body) {
+      return next({
+        status: 400,
+        message: "Not allowed",
+      });
+    }
+    const validation = validate(req.body, bookSchemaUpdate);
+    if (!validation.valid) {
+      return next({
+        status: 400,
+        errors: validation.errors.map((e) => e.stack),
+      });
+    }
     const book = await Book.update(req.params.isbn, req.body);
     return res.json({ book });
   } catch (err) {
