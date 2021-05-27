@@ -41,8 +41,11 @@ router.get("/:id", async function (req, res, next) {
 /** POST /   bookData => {book: newBook}  */
 
 router.post("/", async function (req, res, next) {
-  const validation = awaitjsonschema.validate(req.body, bookSchemaNew);
-  return res.json(bookData);
+  const validation = jsonschema.validate(req.body, bookSchemaNew);
+  if (!result.valid) {
+    return res.json("INVALID DATA!")
+  }
+  return res.json("THAT IS VALID");
 });
 
 /** PUT /[isbn]   bookData => {book: updatedBook}  */
