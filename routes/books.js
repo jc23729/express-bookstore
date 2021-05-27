@@ -1,8 +1,8 @@
 const express = require("express");
 const Book = require("../models/book");
-
+const jsonschema = require("jsonschema");
+const booksSchema = require("../schemas/bookSchemaNew.json");
 const router = new express.Router();
-
 
 /** GET / => {books: [book, ...]}  */
 
@@ -26,6 +26,18 @@ router.get("/:id", async function (req, res, next) {
   }
 });
 
+/** POST /   bookData => {book: newBook}  */
+
+// router.post("/", async function (req, res, next) {
+//   try {
+//     const book = await Book.create(req.body);
+//     return res.status(201).json({ book });
+//   } catch (err) {
+//     return next(err);
+//   }
+// });
+
+//POST ROUTE WITH SCHEMA
 /** POST /   bookData => {book: newBook}  */
 
 router.post("/", async function (req, res, next) {
